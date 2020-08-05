@@ -19,7 +19,7 @@ namespace RomCorruptor {
             string file = string.Empty;
 
             string line = string.Empty;
-            while(!line.ToLower().Equals("quit")) {
+            while(true) {
                 line = Console.ReadLine();
                 if(line.Trim().Length > 0) {
                     string[] args = line.Split(' ');
@@ -39,7 +39,23 @@ namespace RomCorruptor {
                             if(file.Length > 0) {
                                 if(args.Length > 3) {
                                     if(Enum.TryParse(args[0].ToUpper(), out Presets preset) && int.TryParse(args[1], out int starting) && int.TryParse(args[2], out int ending) && int.TryParse(args[3], out int every)) {
-                                        Start(preset, starting, ending, every, File.ReadAllBytes(file));
+                                        switch(Start(preset, starting, ending, every, File.ReadAllBytes(file))) {
+                                            case 1:
+                                                // Une action est faite selon le preset sélectionné
+                                                break;
+                                            case -1:
+                                                Console.WriteLine("[-1] La valeur \"ending\" ne peut pas dépasser le nombre max de bytes dans la ROM.");
+                                                break;
+                                            case -2:
+                                                Console.WriteLine("[-2] Annulé.");
+                                                break;
+                                            case -3:
+                                                Console.WriteLine("[-3] Le preset sélectionné n'a pas encore été configuré.");
+                                                break;
+                                            default:
+                                                Console.WriteLine("Erreur inconnue.");
+                                                break;
+                                        }
                                     }else {
                                         Console.WriteLine("Erreur.");
                                     }
@@ -56,7 +72,11 @@ namespace RomCorruptor {
                         case "presets":
                             ShowPresets();
                             break;
-                        case "quit":
+                        case "clear": case "clr":
+                            Clear();
+                            break;
+                        case "quit": case "exit": case "q":
+                            Environment.Exit(0);
                             break;
                         default:
                             NoCommand();
@@ -67,30 +87,49 @@ namespace RomCorruptor {
         }
 
 
+        #region Commandes
         private static void NoCommand() {
             Console.WriteLine("Cette commande n'existe pas.");
         }
 
+        private static void Help() {
+            Console.WriteLine(Resource.Help);
+        }
+
+        private static void ShowPresets() {
+            Console.WriteLine("Liste des presets:");
+            foreach(string pre in Enum.GetNames(typeof(Presets))) {
+                Console.WriteLine("> " + pre);
+            }
+        }
+
+        private static void Clear() {
+            Console.Clear();
+        }
+        #endregion
 
 
-        private static void Start(Presets preset, int starting, int ending, int every, byte[] bytes) {
+
+        private static int Start(Presets preset, int starting, int ending, int every, byte[] bytes) {
+            int length = bytes.Length;
+            if(ending > length) {
+                return -1;
+            }
             SaveFileDialog save = new SaveFileDialog();
             save.Title = "Choisissez l'emplacement de sauvegarde";
             save.Filter = "Fichiers SNES (*.smc)|*.smc";
             save.InitialDirectory = "C:\\";
             save.DefaultExt = "*.smc";
             if(save.ShowDialog() != DialogResult.OK) {
-                Console.WriteLine("Annulé.");
-                return;
+                return -2;
             }
             string output = save.FileName;
             Console.WriteLine(output + "\n");
             Console.WriteLine("Démarrage du processus...");
-            int length = bytes.Length;
             Console.WriteLine(length + " bytes en tout.");
             if(preset == Presets.NO_CHANGES) {
                 File.WriteAllBytes(output, bytes);
-                return;
+                return 1;
             }
             List<byte> list = new List<byte>(bytes);
             byte old;
@@ -105,24 +144,13 @@ namespace RomCorruptor {
                     }
                     File.WriteAllBytes(output, list.ToArray());
                     Console.WriteLine("Fini en " + (Now() - now) + "ms.");
-                    break;
+                    return 1;
+                default:
+                    return -3;
             }
         }
 
-        private static void Help() {
-            Console.WriteLine("> select\n" +
-                              "> start <preset> <starting> <ending> <every>\n" +
-                              "> help\n" +
-                              "> presets\n" +
-                              "> quit");
-        }
-
-        private static void ShowPresets() {
-            Console.WriteLine("Liste des presets:");
-            foreach(string pre in Enum.GetNames(typeof(Presets))) {
-                Console.WriteLine("> " + pre);
-            }
-        }
+        
 
         private static long Now() {
             return DateTimeOffset.Now.ToUnixTimeMilliseconds();

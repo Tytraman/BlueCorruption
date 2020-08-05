@@ -1,0 +1,5 @@
+> select
+> start <preset> <starting> <ending> <every>
+> help
+> presets
+> quit

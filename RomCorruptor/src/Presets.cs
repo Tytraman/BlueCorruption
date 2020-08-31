@@ -1,7 +1,7 @@
 ﻿namespace RomCorruptor {
     public enum Presets {
         DEBUG,
-        NO_CHANGES,
+        NO_CHANGE,
         MOVE_RIGHT,
     }
 }

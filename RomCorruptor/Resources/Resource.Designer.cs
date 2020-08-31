@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RomCorruptor {
+namespace RomCorruptor.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace RomCorruptor {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RomCorruptor.Resource", typeof(Resource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RomCorruptor.Resources.Resource", typeof(Resource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,12 @@ namespace RomCorruptor {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to &gt; select
+        ///&gt; start &lt;preset&gt; &lt;starting&gt; &lt;ending&gt; &lt;every&gt;
+        ///&gt; help
+        ///&gt; presets
+        ///&gt; clear, clr
+        ///&gt; quit, exit, q.
         /// </summary>
         internal static string Help {
             get {

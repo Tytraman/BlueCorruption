@@ -1,5 +1,8 @@
 > select
-> start <preset> <starting> <ending> <every>
+> setpreset <preset>
+> emulator-path
+> start <starting> <ending> <every>
 > help
 > presets
-> quit
+> clear, clr
+> quit, exit, q

@@ -1,12 +1,11 @@
 ﻿using System;
-using RomCorruptor.Resources;
 
 namespace RomCorruptor.src {
     public static class Helper {
         
 
         public static void Help() {
-            Console.WriteLine(Resource.Help);
+            Console.WriteLine(Properties.Resources.Help);
         }
 
         public static void ShowPresets() {

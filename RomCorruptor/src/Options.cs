@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace RomCorruptor.src {
     
@@ -70,6 +71,7 @@ namespace RomCorruptor.src {
             }
         }
 
+        [STAThread]
         private string CreateDefault() {
             StringBuilder builder = new StringBuilder();
             foreach(var valMap in map) {
@@ -80,7 +82,7 @@ namespace RomCorruptor.src {
             }
             string result = builder.ToString();
             File.WriteAllText(path, result);
-            Console.WriteLine("Les options ont été réinitialisées!");
+            MessageBox.Show("Les options ont été réinitialisées!");
             return result;
         }
     }

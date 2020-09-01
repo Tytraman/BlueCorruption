@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using RomCorruptor.Forms;
 using RomCorruptor.src;
 
 namespace RomCorruptor {
@@ -13,11 +14,11 @@ namespace RomCorruptor {
         public int Start(Options options, int starting, int ending, int every) {
             Presets preset = (Presets) Enum.Parse(typeof(Presets), options.GetValue("preset").ToUpper());
             if(String.IsNullOrEmpty(Path)) {
-                throw new NullReferenceException("[!] Le chemin vers la rom ne peut pas être vide.");
+                throw new NullReferenceException("Le chemin vers la rom ne peut pas être vide.");
             }
             bytes = File.ReadAllBytes(Path);
             if(preset == Presets.NO_CHANGE) {
-                Console.WriteLine("Aucun changement ne va être appliqué.");
+                //Program.Form.result_label.Text = "Aucun changement ne va être appliqué.";
                 TempSave();
                 Save();
                 return 1;
@@ -26,8 +27,7 @@ namespace RomCorruptor {
             if(ending > length) {
                 return -1;
             }
-            Console.WriteLine("Démarrage du processus...");
-            Console.WriteLine(length + " bytes en tout.");
+            //Program.Form.result_label.Text = length + " bytes en tout.";
             List<byte> list = new List<byte>(bytes);
             byte old;
             byte next = 0;
@@ -41,7 +41,7 @@ namespace RomCorruptor {
                     }
                     bytes = list.ToArray();
                     TempSave();
-                    Console.WriteLine("Fini en " + (Util.Now() - now) + "ms.");
+                    Static.Result = "Fini en " + (Util.Now() - now) + "ms.";
                     return 1;
                 default:
                     return -2;
@@ -64,9 +64,8 @@ namespace RomCorruptor {
         }
 
         public void TempSave() {
-            string output = Util.RomsFolder() + System.IO.Path.DirectorySeparatorChar + new Random().Next(0, int.MaxValue) + ".smc";
-            TempRom = output;
-            File.WriteAllBytes(output, bytes);
+            TempRom = Util.RomsFolder() + System.IO.Path.DirectorySeparatorChar + new Random().Next(0, int.MaxValue) + ".smc";
+            File.WriteAllBytes(TempRom, bytes);
         }
     }
 }

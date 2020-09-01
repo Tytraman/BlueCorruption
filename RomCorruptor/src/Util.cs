@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Windows.Forms;
 
 namespace RomCorruptor.src {
     public static class Util {
@@ -19,20 +20,10 @@ namespace RomCorruptor.src {
             return AppData() + Path.DirectorySeparatorChar + "ROMs";
         }
 
+        [STAThread]
         public static bool WantToSave() {
-            while(true) {
-                Console.Write("Voulez-vous sauvegarder la ROM ? (y/n): ");
-                ConsoleKey key = Console.ReadKey().Key;
-                Console.WriteLine();
-                switch(key) {
-                    case ConsoleKey.Y:
-                        return true;
-                    case ConsoleKey.N:
-                        return false;
-                    default:
-                        break;
-                }
-            }
+            DialogResult result = MessageBox.Show("Voulez-vous sauvegarder la ROM ?", "Sauvegarde", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            return result == DialogResult.Yes;
         }
     }
 }
